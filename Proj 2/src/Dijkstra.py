@@ -1,6 +1,9 @@
 #Used for part b of the assignment. Dijkstra's algorithm using adjacency list representation of the graph.
 #Heapq is used to implement the priority queue for efficient retrieval of the next vertex with the smallest distance.
 import heapq
+import random
+import time
+import matplotlib.pyplot as plt
 
 INF = float('inf')
 # sample graph represented as an adjacency matrix
@@ -65,6 +68,74 @@ def dijkstra_list(adjList, source):
 distances = dijkstra_list(adjList, 3)
 
 print(distances)
+
+
+#Part B analysis: The time complexity of Dijkstra's algorithm using an adjacency list and a priority queue (min-heap) 
+def generate_graph(n, edge_probability=0.5):
+
+    graph = [[] for _ in range(n)]
+
+    for i in range(n):
+        for j in range(i + 1, n):
+
+            if random.random() < edge_probability:
+
+                weight = random.randint(1, 10)
+
+                graph[i].append((j, weight))
+                graph[j].append((i, weight))
+
+    return graph
+
+sizes = [100, 200, 400, 800]
+
+# Lists to store results
+vertices = []
+edges_list = []
+times = []
+
+
+for n in sizes:
+
+    graph = generate_graph(n, edge_probability=0.5)
+
+    # Count edges
+    edges = sum(len(neighbors) for neighbors in graph) // 2
+
+    # Start timer
+    start = time.perf_counter()
+
+    # Run Dijkstra
+    dijkstra_list(graph, 0)
+
+    # Stop timer
+    end = time.perf_counter()
+
+    elapsed_time = end - start
+
+    # Store results
+    vertices.append(n)
+    edges_list.append(edges)
+    times.append(elapsed_time)
+
+    print(
+        "V =", n,
+        "E =", edges,
+        "Time =", elapsed_time
+    )
+
+#Plotting of the results
+plt.plot(vertices, times, marker='o')
+
+plt.xlabel("Number of vertices (V)")
+plt.ylabel("Running time (seconds)")
+plt.title("Dijkstra's Algorithm: Running Time vs Number of Vertices")
+
+plt.grid(True)
+
+plt.show()
+
+    
 
 
 
